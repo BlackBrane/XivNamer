@@ -18,7 +18,7 @@ puts "Beginning search in '#{fromDir}'...\n\n"
 n = 0
 
 ent.each { |x|
-  if x =~ /\d\d\d\d\.\d\d\d\d\.pdf/ || x =~ /\d\d\d\d\.\d\d\d\dv.\.pdf/
+  if x =~ /\d\d\d\d\.\d\d\d\d\.pdf|\d\d\d\d\.\d\d\d\dv.\.pdf/
         
     titlecode = x.gsub(/\.pdf/, "")
     arxTitle = Nokogiri::HTML(open('http://arxiv.org/abs/' + titlecode)).at_css "title"
