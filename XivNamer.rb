@@ -3,7 +3,7 @@
 #     1) Edit 'fromDir' to the path where your arXiv papers are located
 #     2) Edit 'targetDir' to the place where you want the renamed papers to go
 #     3) If necessary "gem install nokogiri"
-#     3) Run the script
+#     4) Run the script
 
 require 'nokogiri'
 require 'open-uri'
