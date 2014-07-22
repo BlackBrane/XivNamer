@@ -1,7 +1,7 @@
 # Arxiv paper renamer – pre-2007 format
 #
 #   Instructions:
-#     1) Add any desired arXiv categories to the mycats list below
+#     1) Add any desired arXiv categories to the $Cats variable below as shown
 #     2) Choose an overall path and edit $Path accordingly 
 #     3) Place pdfs in folders named for the corresponding categories ("hep-th", etc) in the specified path
 #     4) If necessary "gem install nokogiri"
@@ -26,6 +26,8 @@ class ArXivCat
     
     ent.each{ |x|
       if x =~ /\d\d\d\d\d\d\d\.pdf|\d\d\d\d\d\d\dv.\.pdf/
+      # if filename x has format '0000000.pdf' or '0000000v1.pdf'
+      
         titlecode = x.gsub(/\.pdf/, "")
         arxTitle = Nokogiri::HTML(open("http://arxiv.org/abs/#{@ident}/#{titlecode}")).at_css "title"
         titStr = arxTitle.to_s.gsub(/<\/title>|<title>|\$|\n/, "").sub(/\[(.*?)\]./, "").gsub(/\//, ":").gsub(/:/, " –")
