@@ -19,6 +19,7 @@ n = 0
 
 ent.each { |x|
   if x =~ /\d\d\d\d\.\d\d\d\d\.pdf|\d\d\d\d\.\d\d\d\dv.\.pdf/
+  # if filename x has format '0000.0000.pdf' or '0000.0000v1.pdf'
         
     titlecode = x.gsub(/\.pdf/, "")
     arxTitle = Nokogiri::HTML(open('http://arxiv.org/abs/' + titlecode)).at_css "title"
@@ -26,7 +27,7 @@ ent.each { |x|
       
     spacer = ""
     spacer = "  " if titlecode.length == 9  # alignment offset for absent version number
-    puts "Found one! ArXiv code #{titlecode},#{spacer} Title: '#{titStr}'."
+    puts "Found one! ArXiv code #{titlecode},#{spacer} Title: '#{titStr}'"
       
     FileUtils.cp(fromDir + x, targetDir)  
     File.rename(targetDir + x, targetDir + titStr + ".pdf")
