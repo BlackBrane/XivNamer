@@ -9,7 +9,6 @@
 
 require 'nokogiri'
 require 'open-uri'
-require 'fileutils'
 
 $Cats = ["hep-th", "hep-ph", "quant-ph"]
 $Path = "/Users/myName/Desktop/ARXIV_SORT/"
