@@ -20,16 +20,17 @@ n = 0
 
 ent.each { |x|
   if x =~ /\d\d\d\d\.\d\d\d\d\.pdf|\d\d\d\d\.\d\d\d\dv.\.pdf/
-  # if filename x has format '0000.0000.pdf' or '0000.0000v1.pdf'
-        
+
     titlecode = x.gsub(/\.pdf/, "")
     arxTitle = Nokogiri::HTML(open('http://arxiv.org/abs/' + titlecode)).at_css "title"
-    titStr = arxTitle.to_s.gsub(/<\/title>|<title>|\$|\n/, "").sub(/\[(.*?)\]./, "").gsub(/\//, ":").gsub(/:/, " –")
-      
+    titStr = arxTitle.to_s.gsub(/<\/title>|<title>|\$|\n/,"").sub(/\[(.*?)\]./,"").gsub(/:/," –").gsub(/\//,":").gsub(/\s\s/," ")
+
+    # alignment offset for absent version number
     spacer = ""
-    spacer = "  " if titlecode.length == 9  # alignment offset for absent version number
-    puts "Found one! ArXiv code #{titlecode},#{spacer} Title: '#{titStr}'"
-      
+    spacer = "  " if titlecode.length == 9
+
+    puts "Found arXiv article #{titlecode},#{spacer} Title: '#{ titStr.gsub(/:/, "/") }'" # change ':' back to '/' for terminal readout
+
     FileUtils.cp(fromDir + x, targetDir)  
     File.rename(targetDir + x, targetDir + titStr + ".pdf")
     File.delete(fromDir + x)
@@ -38,7 +39,7 @@ ent.each { |x|
   end
 }
 
-puts "\n...Done. In total, we found #{n} arXiv articles, out of #{ent.length} files checked.\n" if n > 0
+puts "\n...Done. In total, we found #{n} arXiv articles out of #{ent.length} files checked.\n" if n > 0
 puts "All of them moved to '#{targetDir}'." if n > 0
 puts "No stray ArXiv articles found." if n == 0
 
@@ -46,5 +47,6 @@ puts "No stray ArXiv articles found." if n == 0
 # The regex substitutions in titStr definition do the following:
 #   1) Remove <title>, </title> and an unwanted newline. Also remove $ which usually delineate formulas for LaTeX.
 #   2) Remove the arXiv identifier, plus one extra space: '[0000.0000v0] '
-#   3) Turn '/' into ':'. File.rename balks (at least on a mac) when the second arg contains '/', but if it receives ':' instead it replaces it with '/'
-#   4) Turn ':' into ' -'. Semicolons aren't allowed in filenames so next best option is to change 'Thing: Thingie' to 'Thing - Thingie'
+#   3) Turn ':' into ' -'. Semicolons aren't allowed in filenames so next best option is to change 'Thing: Thingie' to 'Thing - Thingie'
+#   4) Turn '/' into ':'. File.rename balks (at least on a mac) when the second arg contains '/', but if it receives ':' instead it replaces it with '/'
+#   5) Replace any instances of double spaces '  ' with a single space ' '.
