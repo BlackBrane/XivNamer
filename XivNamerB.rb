@@ -29,11 +29,11 @@ class ArXivCat
       
         titlecode = x.gsub(/\.pdf/, "")
         arxTitle = Nokogiri::HTML(open("http://arxiv.org/abs/#{@ident}/#{titlecode}")).at_css "title"
-        titStr = arxTitle.to_s.gsub(/<\/title>|<title>|\$|\n/, "").sub(/\[(.*?)\]./, "").gsub(/\//, ":").gsub(/:/, " –")
-    
+        titStr = arxTitle.to_s.gsub(/<\/title>|<title>|\$|\n/,"").sub(/\[(.*?)\]./,"").gsub(/:/," –").gsub(/\//,":").gsub(/\s\s/," ")
+
         spacer = ""
         spacer = "  " if titlecode.length == 7
-        puts "Found one! ArXiv code #{titlecode},#{spacer} Title: '#{titStr}'"
+        puts "Found one! ArXiv code #{titlecode},#{spacer} Title: '#{ titStr.gsub(/:/, "/") }'"
   
         File.rename(@path + x, @path + titStr + ".pdf")
 
@@ -52,5 +52,6 @@ $Cats.each { |x| ArXivCat.new(x).search }
 # The regex substitutions in titStr definition do the following:
 #   1) Remove <title>, </title> and an unwanted newline. Also remove $ which usually delineate formulas for LaTeX.
 #   2) Remove the arXiv identifier, plus one extra space: '[0000.0000v0] '
-#   3) Turn '/' into ':'. File.rename balks (at least on a mac) when the second arg contains '/', but if it receives ':' instead it replaces it with '/'
-#   4) Turn ':' into ' -'. Semicolons aren't allowed in filenames so next best option is to change 'Thing: Thingie' to 'Thing - Thingie'
+#   3) Turn ':' into ' -'. Semicolons aren't allowed in filenames so next best option is to change 'Thing: Thingie' to 'Thing - Thingie'
+#   4) Turn '/' into ':'. File.rename balks (at least on a mac) when the second arg contains '/', but if it receives ':' instead it replaces it with '/'
+#   5) Replace any instances of double spaces '  ' with a single space ' '.
