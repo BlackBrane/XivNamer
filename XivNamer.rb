@@ -26,8 +26,7 @@ ent.each { |x|
     titStr = arxTitle.to_s.gsub(/<\/title>|<title>|\$|\n/,"").sub(/\[(.*?)\]./,"").gsub(/:/," –").gsub(/\//,":").gsub(/\s\s/," ")
 
     # alignment offset for absent version number
-    spacer = ""
-    spacer = "  " if titlecode.length == 9
+    spacer = " " * (12 - titlecode.length)
 
     puts "Found arXiv article #{titlecode},#{spacer} Title: '#{ titStr.gsub(/:/, "/") }'" # change ':' back to '/' for terminal readout
 
